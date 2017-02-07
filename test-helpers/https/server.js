@@ -1,3 +1,5 @@
+/* global __dirname */
+
 var https = require('https');
 var fs = require('fs');
 var path = require('path');

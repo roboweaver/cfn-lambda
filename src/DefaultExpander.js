@@ -3,6 +3,11 @@ module.exports = function(val) {
   return DefaultExpander(JSON.parse(JSON.stringify(val)));
 };
 
+/**
+ * 
+ * @param {type} tree
+ * @return {.CfnLambda.DefaultExpander.defaults|nm$_DefaultExpander.DefaultExpander.defaults}
+ */
 function DefaultExpander(tree) {
   var expanded = {};
   var defaults;
@@ -39,6 +44,11 @@ function DefaultExpander(tree) {
   return expanded;
 };
 
+/**
+ * 
+ * @param {type} string
+ * @return {undefined}
+ */
 function JSONExpand(string) {
   return JSON.parse(new Buffer(string, 'base64').toString('utf8'));
 }

@@ -1,4 +1,6 @@
 
+/* global __dirname */
+
 var path = require('path');
 var assert = require('assert');
 
@@ -44,7 +46,7 @@ describe('Update', function() {
       assert(expectedStackId === cfnResponse.body.StackId, 'Bad StackID');
       assert(expectedRequestId === cfnResponse.body.RequestId, 'Bad RequestId');
       assert(expectedLogicalResourceId === cfnResponse.body.LogicalResourceId, 'Bad LogicalResourceId');
-      console.log(cfnResponse.body.PhysicalResourceId)
+      console.log(cfnResponse.body.PhysicalResourceId);
       assert(CfnRequest.PhysicalResourceId === cfnResponse.body.PhysicalResourceId, 'Bad PhysicalResourceId');
       done();
     });
@@ -155,6 +157,7 @@ describe('Update', function() {
     };
     var Lambda = CfnLambda({
       Update: function(PhysicalId, Params, OldParams, reply) {
+        // Need expectedPhysicalId here apparently
         reply(null, expectedPhysicalId, expectedData);
       },
       Validate: function(ResourceProperties) {

@@ -1,4 +1,6 @@
 
+/* global __dirname */
+
 var path = require('path');
 var assert = require('assert');
 

@@ -1,4 +1,6 @@
 
+/* global __dirname */
+
 var path = require('path');
 var fs = require('fs');
 
@@ -9,6 +11,13 @@ var metaschema = JSON.parse(fs.readFileSync(path.resolve(__dirname,
   '..', 'lib', 'metaschema.json')).toString());
 
 
+/**
+ * Check if invalid (exported module) 
+ * 
+ * @param {type} params
+ * @param {type} validatorObject
+ * @return {unresolved}
+ */
 module.exports = function checkIfInvalid(params, validatorObject) {
   var loadedSchema;
   var invalidations = [];
@@ -46,6 +55,12 @@ module.exports = function checkIfInvalid(params, validatorObject) {
   }).join('\n');
 };
 
+/**
+ * Schema validator
+ * @param {type} params
+ * @param {type} schema
+ * @return {String}
+ */
 function jsonSchemaValidator(params, schema) {
   if (Object.prototype.toString.call(schema) === '[object Object]') {
     if (JSONSchema.validate(schema, metaschema).length) {

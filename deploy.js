@@ -1,3 +1,5 @@
+/* global __dirname */
+
 var main = function(cfn_module, default_region, deploy_regions, main_callback){
     // main code
 
@@ -29,10 +31,10 @@ var main = function(cfn_module, default_region, deploy_regions, main_callback){
 	var converter = new stream.Writable({
 	  write: function (chunk, encoding, next) {
 	    zip_parts.push(chunk);
-	    next()
+	    next();
 	}});
 
-	converter.on('finish', start_deploy)
+	converter.on('finish', start_deploy);
 
 	console.log('Zipping Lambda bundle to buffer...');
 

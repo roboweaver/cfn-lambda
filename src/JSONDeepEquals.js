@@ -1,5 +1,5 @@
 module.exports = function JSONDeepEquals(a, b) {
-  if (a == null || b == null) {
+  if (a === null || b === null) {
     return a === b;
   }
   var ka = Object.keys(a).sort();

@@ -187,6 +187,7 @@ function CfnLambdaFactory(resourceDefinition) {
           Schema: resourceDefinition.Schema,
           SchemaPath: resourceDefinition.SchemaPath
         });
+        
         if (invalidation) {
           if (RequestType === 'Delete') {
             console.log('cfn-lambda: Got Delete with an invalidation, ' +
@@ -265,7 +266,7 @@ function CfnLambdaFactory(resourceDefinition) {
               LogicalResourceId: event.LogicalResourceId,
               Data: optionalData || OldParams
             });
-          }
+          };
         }
 
         /**

@@ -1,4 +1,6 @@
 
+/* global __dirname */
+
 var path = require('path');
 var fs = require('fs');
 
@@ -6,6 +8,11 @@ Composite.Module = Module;
 
 module.exports = Composite;
 
+/**
+ * 
+ * @param {type} compositeDefinition
+ * @return {unresolved}
+ */
 function Composite(compositeDefinition) {
   var CfnLambda = this;
   var AWS = compositeDefinition.AWS;
@@ -29,6 +36,14 @@ function Composite(compositeDefinition) {
       }
     }
   });
+  
+  /**
+   * 
+   * @param {type} physicalId
+   * @param {type} params
+   * @param {type} reply
+   * @return {undefined}
+   */
   function NoUpdate(physicalId, params, reply) {
     console.log('Entering NoUpdate for the composite resource, ' +
       'checking substack representation outputs for: %s', physicalId);
@@ -38,6 +53,7 @@ function Composite(compositeDefinition) {
       if (getStackErr) {
         console.error('During composite resource NoUpdate op on %s, ' +
           'unable to pull context Outputs: %j', physicalId, getStackErr);
+        // Where does err.message come from ?
         return reply('FATAL: could not pull context: ' +
           (err.message || 'TOTAL_FAILURE'));
       }
@@ -52,6 +68,13 @@ function Composite(compositeDefinition) {
       reply(null, physicalId, outputHashFormatted);
     });
   }
+  
+  /**
+   * 
+   * @param {type} params
+   * @param {type} reply
+   * @return {undefined}
+   */
   function Create(params, reply) {
     var ComposeInstance = new Composer();
     console.log('Entering composite resource CREATE action...');
@@ -87,6 +110,15 @@ function Composite(compositeDefinition) {
       });
     });
   }
+  
+  /**
+   * 
+   * @param {type} physicalId
+   * @param {type} params
+   * @param {type} oldParams
+   * @param {type} reply
+   * @return {undefined}
+   */
   function Update(physicalId, params, oldParams, reply) {
     var ComposeInstance = new Composer();
     console.log('Entering composite resource UPDATE action...');
@@ -121,6 +153,14 @@ function Composite(compositeDefinition) {
       });
     });
   }
+  
+  /**
+   * 
+   * @param {type} physicalId
+   * @param {type} params
+   * @param {type} reply
+   * @return {undefined}
+   */
   function Delete(physicalId, params, reply) {
     console.log('Entering composite resource DELETE action...');
     var stackParams = {
@@ -139,6 +179,15 @@ function Composite(compositeDefinition) {
       reply(null, physicalId, {});
     });
   }
+  
+  /**
+   * 
+   * @param {type} createRes
+   * @param {type} params
+   * @param {type} reply
+   * @param {type} notDone
+   * @return {undefined}
+   */
   function CheckCreate(createRes, params, reply, notDone) {
     var physicalId = createRes.PhysicalResourceId;
     console.log('Entering CheckCreate for the composite resource, ' +
@@ -193,6 +242,17 @@ function Composite(compositeDefinition) {
       }
     });
   }
+  
+  /**
+   * 
+   * @param {type} updateRes
+   * @param {type} physicalId
+   * @param {type} params
+   * @param {type} oldParams
+   * @param {type} reply
+   * @param {type} notDone
+   * @return {undefined}
+   */
   function CheckUpdate(updateRes, physicalId, params, oldParams, reply, notDone) {
     console.log('Entering CheckUpdate for the composite resource, ' +
       'checking substack representation outputs for: %s', physicalId);
@@ -254,6 +314,16 @@ function Composite(compositeDefinition) {
       }
     });
   }
+  
+  /**
+   * 
+   * @param {type} deleteRes
+   * @param {type} physicalId
+   * @param {type} params
+   * @param {type} reply
+   * @param {type} notDone
+   * @return {undefined}
+   */
   function CheckDelete(deleteRes, physicalId, params, reply, notDone) {
     console.log('Entering CheckDelete for the composite resource, ' +
       'checking substack representation outputs for: %s', physicalId);
@@ -324,6 +394,12 @@ function Composite(compositeDefinition) {
       }
     });
   }
+  
+  /**
+   * 
+   * @param {type} mod
+   * @return {undefined}
+   */
   function serviceToken(mod) {
     return [
       "arn",
@@ -335,6 +411,11 @@ function Composite(compositeDefinition) {
       (mod.Name + '-' + mod.Version.replace(/\./g, '-'))
     ].join(':');
   }
+  
+  /**
+   * 
+   * @return {nm$_Composite.Composite.Composer.CompositeAnonym$9}
+   */
   function Composer() {
     var Template = {
       AWSTemplateFormatVersion: "2010-09-09",
@@ -342,17 +423,37 @@ function Composite(compositeDefinition) {
       Resources: {},
       Outputs: {}
     };
+    
+    /**
+     * 
+     * @param {type} ns
+     * @param {type} logicalId
+     * @param {type} params
+     * @param {type} deps
+     * @return {undefined}
+     */
     function AddResource(ns, logicalId, params, deps) {
       Template.Resources[logicalId] = 'string' === typeof ns
         ? makeResource(ns, params, deps)
         : customResource(ns, params, deps);
     }
+    /**
+     * 
+     * @param {type} logicalName
+     * @param {type} value
+     * @return {undefined}
+     */
     function AddOutput(logicalName, value) {
       Template.Outputs[logicalName] = {
         Description: 'Composite resource substack output for: ' + logicalName,
         Value: value
       };
     }
+    
+    /**
+     * 
+     * @return {undefined}
+     */
     function Result() {
       return JSON.stringify(Template);
     }
@@ -360,9 +461,16 @@ function Composite(compositeDefinition) {
       AddResource: AddResource,
       AddOutput: AddOutput,
       Result: Result
-    }
+    };
   }
 
+  /**
+   * 
+   * @param {type} mod
+   * @param {type} params
+   * @param {type} deps
+   * @return {nm$_Composite.Composite.makeResource.resource}
+   */
   function customResource(mod, params, deps) {
     var Properties = clone(params);
     var ResourceType = 'Custom::' + mod.Name.split('-').map(function(piece) {
@@ -372,6 +480,13 @@ function Composite(compositeDefinition) {
     return makeResource(ResourceType, Properties, deps);
   }
 
+  /**
+   * 
+   * @param {type} type
+   * @param {type} params
+   * @param {type} deps
+   * @return {nm$_Composite.Composite.makeResource.resource}
+   */
   function makeResource(type, params, deps) {
     var resource = {
       Type: type,
@@ -383,10 +498,20 @@ function Composite(compositeDefinition) {
     return resource;
   }
 
+  /**
+   * 
+   * @param {type} obj
+   * @return {undefined}
+   */
   function clone(obj) {
     return JSON.parse(JSON.stringify(obj));
   }
 
+  /**
+   * 
+   * @param {type} outputs
+   * @return {Array}
+   */
   function toGetAttFormat(outputs) {
     return (outputs || []).reduce(function(hash, output) {
       hash[output.OutputKey] = output.OutputValue;
@@ -395,6 +520,11 @@ function Composite(compositeDefinition) {
   }
 };
 
+/**
+ * 
+ * @param {type} name
+ * @return {nm$_Composite.Module.CompositeAnonym$12}
+ */
 function Module(name) {
   var modulePackageContent = JSON.parse(fs
     .readFileSync(path.resolve(__dirname,

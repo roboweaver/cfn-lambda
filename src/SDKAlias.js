@@ -1,4 +1,9 @@
 
+/**
+ * 
+ * @param {type} options
+ * @return {Function}
+ */
 module.exports = function(options) {
   return function() {
     console.log('Using cfn-lambda SDKAlias to define an operation');
@@ -26,6 +31,14 @@ module.exports = function(options) {
   };
 };
 
+/**
+ * 
+ * @param {type} options
+ * @param {type} physicalId
+ * @param {type} params
+ * @param {type} reply
+ * @return {undefined}
+ */
 function SimpleAlias(options, physicalId, params, reply) {
   if (params) {
     delete params.ServiceToken;
@@ -47,6 +60,12 @@ function SimpleAlias(options, physicalId, params, reply) {
   });
 }
 
+/**
+ * 
+ * @param {type} options
+ * @param {type} data
+ * @return {unresolved}
+ */
 function attrsFrom(options, data) {
   var attrFunction = Array.isArray(options.returnAttrs) && options.returnAttrs.every(isString)
     ? keyFilter.bind(null, options.returnAttrs)
@@ -58,6 +77,13 @@ function attrsFrom(options, data) {
   return attrFunction(data);
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} options
+ * @param {type} physicalId
+ * @return {usableParams.usedParams|usableParams.withMappedKeys|addAliasedPhysicalId.clone|nm$_SDKAlias.usableParams.paramObject|usableParams.paramObject|usableParams.withPhysicalId|usableParams.filteredParams}
+ */
 function usableParams(params, options, physicalId) {
   var paramObject = params || {};
   if (Array.isArray(options.forceBools) && options.forceBools.every(isString)) {
@@ -83,12 +109,24 @@ function usableParams(params, options, physicalId) {
   return usedParams;
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} physcialIdAlias
+ * @param {type} physicalId
+ * @return {addAliasedPhysicalId.clone}
+ */
 function addAliasedPhysicalId(params, physcialIdAlias, physicalId) {
   var clone = shallowClone(params);
   clone[physcialIdAlias] = physicalId;
   return clone;
 }
 
+/**
+ * 
+ * @param {type} hash
+ * @return {unresolved}
+ */
 function downcaseKeys(hash) {
   return Object.keys(hash).reduce(function(dced, key) {
     dced[key[0].toLowerCase() + key.slice(1, key.length)] = hash[key];
@@ -96,6 +134,11 @@ function downcaseKeys(hash) {
   }, {});
 }
 
+/**
+ * 
+ * @param {type} hash
+ * @return {unresolved}
+ */
 function shallowClone(hash) {
   return Object.keys(hash).reduce(function(clone, key) {
     clone[key] = hash[key];
@@ -103,30 +146,52 @@ function shallowClone(hash) {
   }, {});
 }
 
+/**
+ * 
+ * @param {type} obj
+ * @return {Boolean}
+ */
 function isString(obj) {
   return 'string' === typeof obj;
 }
 
+/**
+ * 
+ * @param {type} ignorableErrorCodes
+ * @param {type} errObject
+ * @return {Boolean}
+ */
 function isIgnorable(ignorableErrorCodes, errObject) {
   return Array.isArray(ignorableErrorCodes) &&
     !!~ignorableErrorCodes.indexOf(errObject.statusCode);
 }
 
-
+/**
+ * 
+ * @param {type} key
+ * @return {Function}
+ */
 function accessFunction(key) {
   return function(data) {
-    return data == null
+    return data === null
       ? undefined
       : data[key];
   };
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} pathSet
+ * @param {type} translator
+ * @return {undefined}
+ */
 function forcePaths(params, pathSet, translator) {
   pathSet.forEach(function(path) {
     var pathTokens = path.split('.');
     var lastToken = pathTokens.pop();
     var intermediate = pathTokens.reduce(function(obj, key) {
-      return obj == null 
+      return obj === null 
         ? undefined
         : obj[key];
     }, params);
@@ -148,12 +213,24 @@ function forcePaths(params, pathSet, translator) {
   });
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} pathSet
+ * @return {undefined}
+ */
 function forceNum(params, pathSet) {
   forcePaths(params, pathSet, function(value) {
     return +value;
   });
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} pathSet
+ * @return {undefined}
+ */
 function forceBoolean(params, pathSet) {
   var translations = {
     '0': false,
@@ -169,6 +246,12 @@ function forceBoolean(params, pathSet) {
   });
 }
 
+/**
+ * 
+ * @param {type} params
+ * @param {type} keyMap
+ * @return {unresolved}
+ */
 function mapKeys(params, keyMap) {
   return Object.keys(params).reduce(function(mapped, key) {
     mapped[keyMap[key] ? keyMap[key] : key] = params[key];
@@ -176,10 +259,20 @@ function mapKeys(params, keyMap) {
   }, {});
 }
 
+/**
+ * 
+ * @return {undefined}
+ */
 function noop() {
 
 }
 
+/**
+ * 
+ * @param {type} includedKeySet
+ * @param {type} hash
+ * @return {unresolved}
+ */
 function keyFilter(includedKeySet, hash) {
   return includedKeySet.reduce(function(fHash, key) {
     fHash[key] = hash[key];
