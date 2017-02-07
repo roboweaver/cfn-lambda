@@ -148,7 +148,8 @@ var main = function(cfn_module, default_region, deploy_regions, main_callback){
 	            Description: LAMBDA_DESC,
 	            Role: role_arn,
 	            Handler: 'index.handler',
-	            Runtime: 'nodejs',
+                    // Update to use the current version of node
+	            Runtime: 'nodejs4.3',
 	            Timeout: 300,
 	            MemorySize: 128
 	          },
