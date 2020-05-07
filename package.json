@@ -4,7 +4,9 @@
   "description": "CloudFormation custom resource helper for Lambda Node.js runtime",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha"
+    "test": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -32,11 +34,13 @@
     "async": "https://registry.npmjs.org/async/-/async-1.5.2.tgz",
     "aws-sdk": "^2.9.0",
     "jayschema": "^0.3.1",
-    "string-format": "^0.5.0"
+    "string-format": "^0.5.0",
+    "snyk": "^1.319.1"
   },
   "devDependencies": {
     "istanbul": "^0.4.5",
     "jayschema": "^0.3.1",
     "mocha": "^3.2.0"
-  }
+  },
+  "snyk": true
 }
